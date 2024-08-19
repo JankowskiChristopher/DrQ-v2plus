@@ -1,4 +1,5 @@
-# distributional-sac
+# DrQ-v2 with improved replay buffer
+can be run on a 12GB GPU and 16GB of RAM!
 
 ## Running experiments
 
