@@ -1,0 +1,43 @@
+defaults:
+  - _self_
+  - override hydra/launcher: submitit_local
+
+exp_name: "clean_rl_sac"
+seed: 1
+torch_deterministic: true
+cuda: true
+track: true
+wandb_project_name: "clean_rl_sac"
+wandb_entity: "krzysztofj"
+capture_video: false
+
+# Algorithm specific arguments
+env_id: "Hopper-v4"
+total_timesteps: 1000000
+buffer_size: 1000000
+gamma: 0.99
+tau: 0.005
+batch_size: 256
+learning_starts: 5000
+policy_lr: 0.0003
+q_lr: 0.001
+policy_frequency: 2
+target_network_frequency: 1
+noise_clip: 0.5
+alpha: 0.2
+autotune: true
+
+hydra:
+  run:
+    dir: ./experiments/results/exp_local/${now:%Y.%m.%d}/${now:%H%M%S}_${hydra.job.override_dirname}
+  sweep:
+    dir: ./experiments/results/${now:%Y.%m.%d}/${now:%H%M}_${agent_cfg.experiment}
+    subdir: ${hydra.job.num}
+  launcher:
+    timeout_min: 4300
+    cpus_per_task: 10
+    gpus_per_node: 1
+    tasks_per_node: 1
+    mem_gb: 160
+    nodes: 1
+    submitit_folder: ./experiments/results/exp/${now:%Y.%m.%d}/${now:%H%M%S}_${agent_cfg.experiment}/.slurm

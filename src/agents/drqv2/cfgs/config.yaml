@@ -1,0 +1,82 @@
+defaults:
+  - _self_
+  - override hydra/hydra_logging: disabled
+  - override hydra/job_logging: custom
+
+# task settings
+frame_stack: 3
+action_repeat: 2
+discount: 0.99
+# train settings
+num_seed_frames: 4000
+# eval
+eval_every_frames: 25000
+redo_batch_size : 256
+redo_every_steps: 5000
+redo_reset_steps: null # null if no resets
+redo_tau: 0.01 # TODO was probably 0 in SAC.
+hard_reset_steps: null # null if no resets
+num_eval_episodes: 10
+# snapshot
+save_snapshot: false
+# replay buffer
+replay_buffer_name: "torch_ram_buffer"
+replay_buffer_size: 1000000
+gpu_replay_buffer_size: 350000 # must be present in this config if not overriden
+ram_replay_buffer_size: 100000 # in old buffers e.g. np_replay_buffer, memmap_buffer
+buffer_size: ${replay_buffer_size}
+replay_buffer_num_workers: 4
+num_workers: ${replay_buffer_num_workers}
+nstep: 3
+batch_size: 256
+use_compression: false
+visualize_buffer: false
+visualize_replay_buffer_samples: 5000
+# misc
+seed: 1
+device: cuda
+save_video: false
+use_tb: false # previously was true
+# wandb
+track: true
+wandb_project_name: "drqv2"
+wandb_entity: "krzysztofj"
+wandb_group: "${task_name}_resets_${hard_reset_steps}_ln_${use_ln}"
+run_name: ""
+metrics_log_frequency: 5000
+# experiment
+experiment: exp
+env_id: ${task_name}
+task_name: ${task_name}
+exp_name: "drqv2_${env_id}"
+# agent
+lr: 1e-4
+feature_dim: 50
+use_ln: false
+replay_ratio: 1
+# torch
+torch_deterministic: false # was not in original config but will set benchmark to true, which was in the original code.
+
+agent:
+  obs_shape: ??? # to be specified later
+  action_shape: ??? # to be specified later
+  device: ${device}
+  lr: ${lr}
+  critic_target_tau: 0.01
+  update_every_steps: 2
+  use_tb: ${use_tb}
+  num_expl_steps: 2000
+  hidden_dim: 1024
+  feature_dim: ${feature_dim}
+  stddev_schedule: ${stddev_schedule}
+  stddev_clip: 0.3
+  replay_ratio: ${replay_ratio}
+  replay_buffer_name: ${replay_buffer_name}
+  critic_dropout: 0.0
+  soft_reset_alpha: 0.9
+  use_ln: ${use_ln}
+
+hydra:
+  output_subdir: null
+  run:
+    dir: .

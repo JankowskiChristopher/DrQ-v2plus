@@ -1,0 +1,19 @@
+# values from task override specifies here, agent_name is necessary and num_train_frames usually too.
+defaults:
+  - _self_
+  - task@_global_: humanoid_walk
+
+
+use_ln: false
+hard_reset_steps: 200000
+seed: 2 # 0 or 1 or 2
+
+
+wandb_project_name: "rebuttal_drqv2"
+
+agent_name: drqv2
+replay_buffer_size: 1000000
+num_train_frames: 3001000  # 1100000 originally
+run_name: "rebuttal_humanoid_walk_ln_${use_ln}_resets_${hard_reset_steps}_seed_${seed}"
+
+track: false
